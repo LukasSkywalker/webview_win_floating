@@ -132,7 +132,10 @@ HRESULT InitWebViewRuntime(PCWSTR pwUserDataFolder, std::function<void(HRESULT)>
         return S_OK;
     }
 
-    return CreateCoreWebView2EnvironmentWithOptions(nullptr, pwUserDataFolder, nullptr,
+    auto options = Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>();
+    options->put_AdditionalBrowserArguments(L"--auth-schemes=basic,digest");
+
+    return CreateCoreWebView2EnvironmentWithOptions(nullptr, pwUserDataFolder, options.Get(),
         Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [callback](HRESULT result, ICoreWebView2Environment* env) -> HRESULT {
                 g_env = env;
