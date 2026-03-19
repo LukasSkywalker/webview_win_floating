@@ -422,6 +422,16 @@ MyWebViewImpl::MyWebViewImpl(HWND hWnd,
                             return S_OK;
                     }).Get(), NULL);
 
+                auto webview10 = m_pWebview.try_query<ICoreWebView2_10>();
+                if (webview10 != NULL) {
+                    webview10->add_BasicAuthenticationRequested(
+                        Callback<ICoreWebView2BasicAuthenticationRequestedEventHandler>(
+                            [=](ICoreWebView2* sender, ICoreWebView2BasicAuthenticationRequestedEventArgs* args) -> HRESULT {
+                                args->put_Cancel(TRUE);
+                                return S_OK;
+                            }).Get(), NULL);
+                }
+
                 params.onCreated(hr, this);
                 return hr;
             });
